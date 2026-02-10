@@ -13,13 +13,19 @@ const signupPassword = document.getElementById('signupPassword');
 const passwordStrength = document.getElementById('passwordStrength');
 const confirmPassword = document.getElementById('confirmPassword');
 
-// API Configuration
-const API_BASE_URL = 'http://localhost:8080/api'; // Update with your backend URL
+// API Configuration - UPDATED FOR RENDER
+// Use dynamic URL that works for both local and production
+const API_BASE_URL = window.location.origin; // This will be https://chicadish.onrender.com
 const AUTH_ENDPOINTS = {
-    login: `${API_BASE_URL}/auth/login`,
-    register: `${API_BASE_URL}/auth/register/client`,
-    me: `${API_BASE_URL}/auth/me`
+    login: `${API_BASE_URL}/api/auth/login`,
+    register: `${API_BASE_URL}/api/auth/register/client`,
+    me: `${API_BASE_URL}/api/auth/me`
 };
+
+// For debugging - log the API URL
+console.log('API Base URL:', API_BASE_URL);
+console.log('Login Endpoint:', AUTH_ENDPOINTS.login);
+console.log('Current URL:', window.location.href);
 
 // State management
 let authToken = localStorage.getItem('authToken') || null;
@@ -27,14 +33,19 @@ let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 
 // Check authentication on page load
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, checking authentication...');
     if (authToken) {
+        console.log('Found auth token, verifying...');
         verifyTokenAndRedirect();
+    } else {
+        console.log('No auth token found');
     }
 });
 
 // Verify token and redirect based on role
 async function verifyTokenAndRedirect() {
     try {
+        console.log('Verifying token with endpoint:', AUTH_ENDPOINTS.me);
         const response = await fetch(AUTH_ENDPOINTS.me, {
             method: 'GET',
             headers: {
@@ -43,13 +54,17 @@ async function verifyTokenAndRedirect() {
             }
         });
 
+        console.log('Token verification response status:', response.status);
+        
         if (response.ok) {
             const userData = await response.json();
+            console.log('User data retrieved:', userData);
             currentUser = userData;
             localStorage.setItem('currentUser', JSON.stringify(userData));
             
             // Check role and redirect if needed
             if (currentUser.role === 'ADMIN' && !window.location.pathname.includes('/admin/page')) {
+                console.log('Admin user detected, redirecting to admin page');
                 window.location.href = '/admin/page';
                 return;
             }
@@ -57,11 +72,13 @@ async function verifyTokenAndRedirect() {
             updateUIForLoggedInUser();
             
         } else {
+            console.log('Token invalid, clearing auth data');
             // Token invalid, clear storage
             clearAuthData();
         }
     } catch (error) {
         console.error('Token verification failed:', error);
+        console.error('Error details:', error.message);
         clearAuthData();
     }
 }
@@ -323,6 +340,9 @@ loginForm.addEventListener('submit', async function(e) {
     submitBtn.disabled = true;
     
     try {
+        console.log('Attempting login to:', AUTH_ENDPOINTS.login);
+        console.log('Login payload:', { email: email, password: '[HIDDEN]' });
+        
         const response = await fetch(AUTH_ENDPOINTS.login, {
             method: 'POST',
             headers: {
@@ -334,7 +354,10 @@ loginForm.addEventListener('submit', async function(e) {
             })
         });
         
+        console.log('Login response status:', response.status);
+        
         const data = await response.json();
+        console.log('Login response data:', data);
         
         if (response.ok) {
             // Save token and user data
@@ -378,10 +401,12 @@ loginForm.addEventListener('submit', async function(e) {
         } else {
             // Handle error
             const errorMessage = data.message || 'Login failed. Please check your credentials.';
+            console.error('Login failed:', errorMessage);
             showModalMessage(errorMessage, 'error');
         }
     } catch (error) {
         console.error('Login error:', error);
+        console.error('Error details:', error.message);
         showModalMessage('Network error. Please try again.', 'error');
     } finally {
         // Reset button state
@@ -445,6 +470,15 @@ signupForm.addEventListener('submit', async function(e) {
     submitBtn.disabled = true;
     
     try {
+        console.log('Attempting registration to:', AUTH_ENDPOINTS.register);
+        console.log('Registration payload:', { 
+            firstName: firstName, 
+            lastName: lastName, 
+            email: email, 
+            password: '[HIDDEN]',
+            newsletterSubscribed: newsletter 
+        });
+        
         const response = await fetch(AUTH_ENDPOINTS.register, {
             method: 'POST',
             headers: {
@@ -459,7 +493,10 @@ signupForm.addEventListener('submit', async function(e) {
             })
         });
         
+        console.log('Registration response status:', response.status);
+        
         const data = await response.json();
+        console.log('Registration response data:', data);
         
         if (response.ok) {
             // Save token and user data
@@ -498,10 +535,12 @@ signupForm.addEventListener('submit', async function(e) {
         } else {
             // Handle error
             const errorMessage = data.message || 'Registration failed. Please try again.';
+            console.error('Registration failed:', errorMessage);
             showModalMessage(errorMessage, 'error');
         }
     } catch (error) {
         console.error('Registration error:', error);
+        console.error('Error details:', error.message);
         showModalMessage('Network error. Please try again.', 'error');
     } finally {
         // Reset button state
@@ -686,3 +725,31 @@ signupPassword.addEventListener('input', function() {
         confirmPassword.style.boxShadow = 'none';
     }
 });
+
+// Debug function to test API connection
+window.testAPIConnection = async function() {
+    console.log('Testing API connection...');
+    console.log('Current API_BASE_URL:', API_BASE_URL);
+    console.log('Login endpoint:', AUTH_ENDPOINTS.login);
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/actuator/health`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Health check response:', await response.text());
+    } catch (error) {
+        console.error('Health check failed:', error);
+    }
+};
+
+// Run test on load for debugging
+// Uncomment for debugging:
+// document.addEventListener('DOMContentLoaded', function() {
+//     setTimeout(() => {
+//         testAPIConnection();
+//     }, 1000);
+// });
