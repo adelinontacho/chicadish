@@ -9,6 +9,8 @@ RUN mvn clean package -DskipTests
 # Run stage
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+# CHANGE: Look for WAR file instead of JAR
+COPY --from=build /app/target/*.war app.war
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# CHANGE: Run as WAR file
+ENTRYPOINT ["java", "-jar", "app.war"]
