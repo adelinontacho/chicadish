@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Tasty Bites</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <a href="/admin/page" class="logo"><i class="fas fa-utensils"></i> Tasty Bites Admin</a>
+        <div id="menu-bar" class="fas fa-bars"></div>
+        <nav class="navbar">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#users">Users</a>
+            <a href="#orders">Orders</a>
+            <a href="#menu">Menu</a>
+            <a href="#" id="logout-link">Logout</a>
+        </nav>
+    </header>
+
+    <!-- Admin Main Container -->
+    <div class="admin-main-container">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="profile-info">
+                    <h3 id="admin-name">Loading...</h3>
+                    <p id="admin-email">Loading...</p>
+                    <span class="admin-badge">Administrator</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#users" class="nav-link" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                    <span class="badge-count" id="users-count">0</span>
+                </a>
+                <a href="#orders" class="nav-link" data-section="orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                    <span class="badge-count" id="orders-count">0</span>
+                </a>
+                <a href="#menu" class="nav-link" data-section="menu">
+                    <i class="fas fa-utensils"></i>
+                    <span>Menu Items</span>
+                    <span class="badge-count" id="menu-count">0</span>
+                </a>
+                <a href="#analytics" class="nav-link" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#settings" class="nav-link" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>Admin Panel v1.0</p>
+                <p class="server-time" id="server-time">--:--:--</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-content">
+            <!-- Dashboard Section (Default) -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1>Dashboard Overview</h1>
+                    <div class="header-actions">
+                        <button class="btn-refresh" id="refresh-dashboard">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <div class="date-range">
+                            <span id="current-date">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4cd137, #44bd32);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-users">0</h3>
+                            <p>Total Users</p>
+                            <div class="stat-trend">
+                                <span class="trend-up" id="users-trend">+0%</span>
+                                <span>from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #ff9f43, #e67e22);">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-orders">0</h3>
+                            <p>Total Orders</p>
+                            <div class="stat-trend">
+                                <span class="trend-up" id="orders-trend">+0%</span>
+                                <span>from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-items">0</h3>
+                            <p>Menu Items</p>
+                            <div class="stat-trend">
+                                <span class="trend-up" id="items-trend">+0%</span>
+                                <span>from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-revenue">$0</h3>
+                            <p>Total Revenue</p>
+                            <div class="stat-trend">
+                                <span class="trend-up" id="revenue-trend">+0%</span>
+                                <span>from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="stat-mini">
+                        <div class="mini-icon" style="background: #2ecc71;">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="mini-content">
+                            <h4 id="active-users">0</h4>
+                            <p>Active Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="mini-icon" style="background: #e74c3c;">
+                            <i class="fas fa-user-slash"></i>
+                        </div>
+                        <div class="mini-content">
+                            <h4 id="inactive-users">0</h4>
+                            <p>Inactive Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="mini-icon" style="background: #3498db;">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="mini-content">
+                            <h4 id="admin-count">0</h4>
+                            <p>Administrators</p>
+                        </div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="mini-icon" style="background: #f39c12;">
+                            <i class="fas fa-user-tag"></i>
+                        </div>
+                        <div class="mini-content">
+                            <h4 id="client-count">0</h4>
+                            <p>Clients</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tables Grid -->
+                <div class="tables-grid">
+                    <!-- Recent Users Table -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3>Recent Users</h3>
+                            <a href="#users" class="view-all">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-users-table">
+                                    <tr class="loading-row">
+                                        <td colspan="6">
+                                            <div class="table-loading">
+                                                <div class="spinner-small"></div>
+                                                Loading users...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Orders Table -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3>Recent Orders</h3>
+                            <a href="#orders" class="view-all">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer</th>
+                                        <th>Items</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-orders-table">
+                                    <tr class="loading-row">
+                                        <td colspan="6">
+                                            <div class="table-loading">
+                                                <div class="spinner-small"></div>
+                                                Loading orders...
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Users Section -->
+            <section id="users" class="content-section">
+                <div class="section-header">
+                    <h1>User Management</h1>
+                    <div class="header-actions">
+                        <button class="btn-primary" id="add-user-btn">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </button>
+                        <div class="search-box">
+                            <input type="text" id="user-search" placeholder="Search users...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>All Users</h3>
+                        <div class="table-filters">
+                            <select id="user-role-filter">
+                                <option value="all">All Roles</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="CLIENT">Client</option>
+                            </select>
+                            <select id="user-status-filter">
+                                <option value="all">All Status</option>
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-users-table">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-footer">
+                        <div class="pagination" id="users-pagination">
+                            <!-- Pagination will be generated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Orders Section -->
+            <section id="orders" class="content-section">
+                <div class="section-header">
+                    <h1>Order Management</h1>
+                    <div class="header-actions">
+                        <div class="search-box">
+                            <input type="text" id="order-search" placeholder="Search orders...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-header">
+                        <h3>All Orders</h3>
+                        <div class="table-filters">
+                            <select id="order-status-filter">
+                                <option value="all">All Status</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="PROCESSING">Processing</option>
+                                <option value="DELIVERED">Delivered</option>
+                                <option value="CANCELLED">Cancelled</option>
+                            </select>
+                            <input type="date" id="order-date-filter">
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-orders-table">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Other sections (Menu, Analytics, Settings) would go here -->
+            <section id="menu" class="content-section">
+                <div class="section-header">
+                    <h1>Menu Management</h1>
+                    <!-- Menu management content -->
+                </div>
+            </section>
+            
+            <section id="analytics" class="content-section">
+                <div class="section-header">
+                    <h1>Analytics</h1>
+                    <!-- Analytics content -->
+                </div>
+            </section>
+            
+            <section id="settings" class="content-section">
+                <div class="section-header">
+                    <h1>Settings</h1>
+                    <!-- Settings content -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="error-toast" class="toast toast-error" style="display: none;">
+        <div class="toast-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="error-message"></span>
+        </div>
+        <button class="toast-close">&times;</button>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="success-toast" class="toast toast-success" style="display: none;">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="success-message"></span>
+        </div>
+        <button class="toast-close">&times;</button>
+    </div>
+
+    <script src="../assets/js/admin.js"></script>
+</body>
+</html>
